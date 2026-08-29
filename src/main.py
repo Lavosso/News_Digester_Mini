@@ -24,7 +24,7 @@ def main() -> None:
             print(f"TITLE: {article_data['title']}")
             print(f"DATE: {article_data['date']}")
             print(f"TEXT: \n \n {article_data['text']} \n \n")
-
+    
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,4 @@
 {
-  "site1": "https://wiadomosci.onet.pl/kraj"
+  "country": "https://wiadomosci.onet.pl/kraj/",
+  "world": "https://wiadomosci.onet.pl/swiat/"
 }

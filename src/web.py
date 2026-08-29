@@ -60,7 +60,7 @@ def gather_articles(base_url: str, timeout=10) -> list[str]:
             # Clean URL to prevent tracking tags from causing duplicate checks
             clean_url = full_url.split('?')[0]
 
-            if clean_url.startswith('https://wiadomosci.onet.pl/kraj/'):
+            if clean_url.startswith(base_url):
                 if clean_url not in seen_links:
                     page_links_dict[clean_url] = True
                     seen_links.add(clean_url)
