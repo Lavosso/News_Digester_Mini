@@ -5,6 +5,14 @@ from src import web
 logger = logging.getLogger(__name__)
 SOURCE_LIST_DIR = "source_list.json"
 
+def write_data_in_markdown(data: list[dict[str, str]], title: str) -> None:
+    md_text = f"# General Report: {title}\n"
+    for article in data:
+        md_text += f"## {article['title']}:\n"
+        md_text += f"**{article['date']}**\n\n"
+        md_text += article['text'] + f"\n\n"
+    with open(f"sumup_{title}.md", "w", encoding="utf-8") as f:
+        f.write(md_text)
 
 def main() -> None:
     logging.basicConfig(
@@ -18,13 +26,12 @@ def main() -> None:
 
     for source_id, source in source_list.items():
         found_articles = web.gather_articles(source)
-
+        source_articles = []
         for article_url in found_articles:
             article_data = web.extract_data_onet_pl(article_url)
-            print(f"TITLE: {article_data['title']}")
-            print(f"DATE: {article_data['date']}")
-            print(f"TEXT: \n \n {article_data['text']} \n \n")
-    
+            source_articles.append(article_data)
+            write_data_in_markdown(source_articles, source_id)
+
 
 if __name__ == "__main__":
     main()
