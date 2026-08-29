@@ -2,7 +2,7 @@
 A news-gathering system for making a daily information digest.
 
 ## v0.1 
-- [ ] Source listing in JSON.
+- [x] Source listing in JSON.
 - [ ] Data gathering through HTTP.
 - [ ] Timeout and error handling.
 - [ ] Answer cache.
