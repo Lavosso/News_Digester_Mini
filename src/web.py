@@ -1,11 +1,15 @@
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
 import re
+from datetime import datetime
 from urllib.parse import urljoin
 
-def extract_data_onet_pl(url: str, timeout = 10) -> dict:
-    response = requests.get(url, timeout=timeout, headers={"User-Agent": "News_digester/0.1"})
+import requests
+from bs4 import BeautifulSoup
+
+
+def extract_data_onet_pl(url: str, timeout=10) -> dict:
+    response = requests.get(
+        url, timeout=timeout, headers={"User-Agent": "News_digester/0.1"}
+    )
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -27,13 +31,14 @@ def extract_data_onet_pl(url: str, timeout = 10) -> dict:
     extracted_data = {
         "title": title,
         "date": date_pub,
-        "text": article_text if article_text else "Was not possible to extract text."}
+        "text": article_text if article_text else "Was not possible to extract text.",
+    }
 
     return extracted_data
 
 
 def gather_articles(base_url: str, timeout=10) -> list[str]:
-    today_str = datetime.now().strftime('%Y-%m-%d')
+    today_str = datetime.now().strftime("%Y-%m-%d")
     today_articles = []
     seen_links = set()
 
@@ -45,25 +50,26 @@ def gather_articles(base_url: str, timeout=10) -> list[str]:
         url = base_url if page == 1 else f"{base_url}?strona={page}"
         print(f"\n--- Fetching Page {page}: {url} ---")
 
-        response = requests.get(url, timeout=timeout, headers={"User-Agent": "News_digester/0.1"})
+        response = requests.get(
+            url, timeout=timeout, headers={"User-Agent": "News_digester/0.1"}
+        )
         response.raise_for_status()
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        links = soup.find_all('a', href=True)
+        soup = BeautifulSoup(response.text, "html.parser")
+        links = soup.find_all("a", href=True)
 
         # Use a dictionary to maintain insertion order for THIS page's links
         page_links_dict = {}
         for a_tag in links:
-            raw_href = a_tag['href']
+            raw_href = a_tag["href"]
             full_url = urljoin(url, str(raw_href))
 
             # Clean URL to prevent tracking tags from causing duplicate checks
-            clean_url = full_url.split('?')[0]
+            clean_url = full_url.split("?")[0]
 
-            if clean_url.startswith(base_url):
-                if clean_url not in seen_links:
-                    page_links_dict[clean_url] = True
-                    seen_links.add(clean_url)
+            if clean_url.startswith(base_url) and clean_url not in seen_links:
+                page_links_dict[clean_url] = True
+                seen_links.add(clean_url)
 
         page_links = list(page_links_dict.keys())
 
@@ -72,14 +78,18 @@ def gather_articles(base_url: str, timeout=10) -> list[str]:
             keep_fetching = False
             continue
 
-        print(f"Found {len(page_links)} new potential articles on page {page}. Verifying...")
+        print(
+            f"Found {len(page_links)} new potential articles on page {page}. Verifying..."
+        )
 
         # Assume we will go to the next page unless we hit an older article
         hit_old_article = False
 
         for link in page_links:
             try:
-                article_resp = requests.get(link, headers={"User-Agent": "News_digester/0.1"})
+                article_resp = requests.get(
+                    link, headers={"User-Agent": "News_digester/0.1"}
+                )
                 match = re.search(r'"datePublished"\s*:\s*"([^"]+)"', article_resp.text)
 
                 if match:
@@ -103,5 +113,7 @@ def gather_articles(base_url: str, timeout=10) -> list[str]:
         else:
             # If every single article on this page was from today, load the next page
             page += 1
-    print(f"\nFinished! Verified a total of {len(today_articles)} articles posted today.")
+    print(
+        f"\nFinished! Verified a total of {len(today_articles)} articles posted today."
+    )
     return today_articles
