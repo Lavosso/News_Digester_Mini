@@ -3,9 +3,8 @@ A news-gathering system for making a daily information digest.
 
 ## v0.1 
 - [x] Source listing in JSON.
-- [ ] Data gathering through HTTP.
-- [ ] Timeout and error handling.
-- [ ] Answer cache.
+- [x] Data gathering through HTTP.
+- [x] Timeout and error handling.
 - [ ] Title/link/date extraction.
 - [ ] Markdown output.
 
@@ -14,21 +13,14 @@ Source list → **Executor (main)**
 
 **Executor (main)** → Source → **Data gatherer (web)**
 
-**Data Gatherer (web)** → Source data → **Data extractor (data)**
+**Data Gatherer (web)** → Source data → **Data extractor (web)**
 
-**Data extractor (data)** → Clear data → **Data Cache (files)**
-
-**Data Cache (files)** → Checked data → **JSON logger (files)**
-
-**JSON extractor (files)** → Full daily json data → **Markdown setuper (data)**
+**Data extractor (web)** → Clear data →  **Markdown setuper (data)**
 
 **Markdown setuper (data)** → Markdown-ready data → **Markdown writer (files)**
 
 ## 0.1 To-Do
-- [ ] (main) Executor
-- [ ] (web) Data gatherer
-- [ ] (data) Data extractor
+- [x] (main) Executor
+- [x] (web) Data gatherer
+- [x] (data) Data extractor
 - [ ] (data) Markdown setuper
-- [ ] (files) Data cache
-- [ ] (files) JSON logger
-- [ ] (files) JSON extractor
