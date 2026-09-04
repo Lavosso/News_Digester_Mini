@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from urllib.parse import urljoin
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 from bs4 import BeautifulSoup
@@ -117,3 +118,15 @@ def gather_articles(base_url: str, timeout=10) -> list[str]:
         f"\nFinished! Verified a total of {len(today_articles)} articles posted today."
     )
     return today_articles
+
+
+def extract_articles_data_async(
+    urls: list[str], timeout: int = 10, max_workers: int = 8
+) -> list[dict]:
+    if not urls:
+        return []
+
+    workers = min(max_workers, len(urls))
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(extract_data_onet_pl, url, timeout) for url in urls]
+        return [future.result() for future in futures]

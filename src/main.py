@@ -4,7 +4,7 @@ import logging
 from src import web
 
 logger = logging.getLogger(__name__)
-SOURCE_LIST_DIR = "source_list.json"
+SOURCE_LIST_DIR = "src/source_list.json"
 
 
 def write_data_in_markdown(data: list[dict[str, str]], title: str) -> None:
@@ -29,11 +29,8 @@ def main() -> None:
 
     for source_id, source in source_list.items():
         found_articles = web.gather_articles(source)
-        source_articles = []
-        for article_url in found_articles:
-            article_data = web.extract_data_onet_pl(article_url)
-            source_articles.append(article_data)
-            write_data_in_markdown(source_articles, source_id)
+        source_articles = web.extract_articles_data_async(found_articles)
+        write_data_in_markdown(source_articles, source_id)
 
 
 if __name__ == "__main__":
