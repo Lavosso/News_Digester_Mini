@@ -20,6 +20,12 @@ By launching this script, a number of md files is created, in which one can find
   - country: sync=50.11s vs async=8.61s (**5.82x faster**)
   - world: sync=49.83s vs async=8.90s (**5.60x faster**)
 
+## v0.2.1
+- [x] Improved scraper error handling for failed article fetches and parsing issues.
+- [x] Added explicit warnings for missing metadata such as title, date, and article body.
+- [x] Skips broken sources and malformed article pages without aborting the full run.
+- [x] Better logs make it easier to diagnose which source or article failed.
+
 ## Mental Model
 Source list → **Executor (main)**
 

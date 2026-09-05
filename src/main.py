@@ -28,9 +28,24 @@ def main() -> None:
         logger.info(f"loaded source list: {source_list}")
 
     for source_id, source in source_list.items():
-        found_articles = web.gather_articles(source)
-        source_articles = web.extract_articles_data_async(found_articles)
-        write_data_in_markdown(source_articles, source_id)
+        try:
+            found_articles = web.gather_articles(source)
+            if not found_articles:
+                logger.warning("No articles were found for source '%s' (%s).", source_id, source)
+                continue
+
+            source_articles = web.extract_articles_data_async(found_articles)
+            write_data_in_markdown(source_articles, source_id)
+        except (web.NewsDigesterError, ValueError) as exc:
+            logger.error("Skipping source '%s' (%s) because it failed during scraping: %s", source_id, source, exc)
+            continue
+        except Exception as exc:
+            logger.exception(
+                "Unexpected error while processing source '%s' (%s). This source was skipped.",
+                source_id,
+                source,
+            )
+            continue
 
 
 if __name__ == "__main__":
